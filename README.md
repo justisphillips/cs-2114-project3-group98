@@ -32,6 +32,13 @@ The view uses Java Swing to provide a basic interface for interacting with the w
 
 One challenge in developing QueueTheEncore was translating our initial project specification into separate classes with clearly defined responsibilities. We needed to determine which methods belonged in the model and which actions should be handled by the controller or displayed by the view.
 
+The view will only be responsible for displaying information and collecting user input. 
+The view does not know that WaitlistModel exists, how the queue is stored, or which names and IDs are valid. It receives Fan objects from the controller only to display their name and ID, and it never calls model methods. The view will know each fan's displayed name, queue position, and current waitlist status through information provided by the controller. However, it will not directly access the deque, linked nodes, or internal queue operations.
+When a user joins or leaves the waitlist, the controller will call the appropriate model method and then retrieve the updated waitlist information to refresh the view. Inside refreshView(), the controller calls getWaitlist() and passes the result to the view with displayWaitlist(). 
+We chose this approach because it prevents the GUI from depending on how the queue is implemented. It also allows us to test the model separately and modify the interface without changing the underlying waitlist logic. 
+
+For the unknowns from the scope, we still need to determine how to maintain FIFO ordering with fan club priority because we haven't implemented that stretch goal yet. We were already able to implement the removing specific users from the deque and dynamically updating positions features. We were able to connect queue operations to the GUI, but have not implemented wait timers or notifications for Demo Mode.
+
 Separating the model from the GUI was especially important because it allows us to test the queue operations independently. Implementing unique fan IDs was another important design decision because multiple fans may share the same name.
 
 We found it difficult to balance the work distribution since many of our classes depend on one another. We worked through this by communicating and providing ourselves deadlines for when certain classes needed to be completed to allow for cohesion in our project deliverable.
@@ -47,7 +54,7 @@ For Deliverable 4, our first priority is to finish connecting the WaitlistModel,
 
 Our planned non-trivial feature is Fan Club Priority. Currently, our MVP processes all fans in FIFO order. We plan to modify this behavior so that fan club members receive priority over regular fans while maintaining FIFO order within each membership group.
 
-We predict that this feature will require changes to WaitlistModel to manage priority ordering, WaitlistController to process membership selections, and WaitlistView to allow users to select their membership status. Our Fan class already stores membership information, so we may not need to modify it. We also expect LinkedDeque to remain unchanged because it already provides the queue operations needed for this feature.
+We predict that this feature will require changes to WaitlistModel to manage priority ordering, WaitlistController to process membership selections, and WaitlistView to allow users to select their membership status with Fan(String name, int fanID, boolean membership). Our Fan class already stores membership information, so we may not need to modify it much besides changing the constuctor. We also expect LinkedDeque to remain unchanged because it already provides the queue operations needed for this feature.
 
 **Stretch Goals**
 
