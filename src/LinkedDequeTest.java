@@ -13,12 +13,19 @@ public class LinkedDequeTest
 {
     private LinkedDeque<String> deque;
 
+    /**
+     * Creates a new empty deque before each test.
+     */
     public void setUp()
     {
         deque = new LinkedDeque<>();
     }
 
 
+    /**
+     * Tests that enqueue adds elements to the back, so the first element added
+     * stays at the front.
+     */
     public void testEnqueueAddsToBack()
     {
         deque.enqueue("A");
@@ -28,6 +35,10 @@ public class LinkedDequeTest
     }
 
 
+    /**
+     * Tests that enqueue rejects a null element with an
+     * IllegalArgumentException and leaves the deque unchanged.
+     */
     public void testEnqueueNullRejected()
     {
         deque.enqueue("A");
@@ -43,6 +54,10 @@ public class LinkedDequeTest
     }
 
 
+    /**
+     * Tests that dequeue removes and returns the front element and the next
+     * element becomes the front.
+     */
     public void testDequeueRemovesFront()
     {
         deque.enqueue("A");
@@ -53,6 +68,9 @@ public class LinkedDequeTest
     }
 
 
+    /**
+     * Tests that dequeue on an empty deque throws a NoSuchElementException.
+     */
     public void testDequeueEmptyThrows()
     {
         try
@@ -67,6 +85,10 @@ public class LinkedDequeTest
     }
 
 
+    /**
+     * Tests that removing the only element empties the deque and that the deque
+     * still works when an element is added afterward.
+     */
     public void testDequeueLastElementEmptiesDeque()
     {
         deque.enqueue("A");
@@ -77,6 +99,9 @@ public class LinkedDequeTest
     }
 
 
+    /**
+     * Tests that peek returns the front element without removing it.
+     */
     public void testPeekDoesNotRemove()
     {
         deque.enqueue("A");
@@ -85,6 +110,9 @@ public class LinkedDequeTest
     }
 
 
+    /**
+     * Tests that peek on an empty deque throws a NoSuchElementException.
+     */
     public void testPeekEmptyThrows()
     {
         try
@@ -99,6 +127,10 @@ public class LinkedDequeTest
     }
 
 
+    /**
+     * Tests that isEmpty and size report the right values for an empty deque
+     * and after one element is added.
+     */
     public void testIsEmptyAndSize()
     {
         assertTrue(deque.isEmpty());
@@ -109,6 +141,10 @@ public class LinkedDequeTest
     }
 
 
+    /**
+     * Tests that remove can take an element out of the middle of the deque
+     * while keeping the others in order.
+     */
     public void testRemoveMiddle()
     {
         deque.enqueue("A");
@@ -120,6 +156,10 @@ public class LinkedDequeTest
     }
 
 
+    /**
+     * Tests that remove works on the front and back elements and that the front
+     * and back references stay correct afterward.
+     */
     public void testRemoveFrontAndBack()
     {
         deque.enqueue("A");
@@ -133,6 +173,10 @@ public class LinkedDequeTest
     }
 
 
+    /**
+     * Tests that remove returns false and changes nothing when the element is
+     * missing, is null, or the deque is empty.
+     */
     public void testRemoveMissingReturnsFalse()
     {
         deque.enqueue("A");
@@ -143,6 +187,9 @@ public class LinkedDequeTest
     }
 
 
+    /**
+     * Tests that addFront inserts an element at the front of the deque.
+     */
     public void testAddFrontInsertsAtFront()
     {
         deque.enqueue("B");
@@ -152,6 +199,10 @@ public class LinkedDequeTest
     }
 
 
+    /**
+     * Tests that addFront works on an empty deque and that enqueue still adds
+     * to the back afterward.
+     */
     public void testAddFrontOnEmptyThenEnqueue()
     {
         deque.addFront("A");
@@ -160,6 +211,10 @@ public class LinkedDequeTest
     }
 
 
+    /**
+     * Tests that addFront rejects a null element with an
+     * IllegalArgumentException.
+     */
     public void testAddFrontNullRejected()
     {
         try
@@ -174,6 +229,10 @@ public class LinkedDequeTest
     }
 
 
+    /**
+     * Tests that get returns each element at its index, with index 0 as the
+     * front, without removing anything.
+     */
     public void testGetReturnsElementsByIndex()
     {
         deque.enqueue("A");
@@ -188,6 +247,10 @@ public class LinkedDequeTest
     }
 
 
+    /**
+     * Tests that get throws an IndexOutOfBoundsException for an empty deque, a
+     * negative index, and an index equal to the size.
+     */
     public void testGetOutOfRangeThrows()
     {
         try
@@ -221,6 +284,10 @@ public class LinkedDequeTest
     }
 
 
+    /**
+     * Tests that first-in, first-out order is kept through a mix of enqueue,
+     * remove, and dequeue calls.
+     */
     public void testFifoOrderKeptThroughMixedOperations()
     {
         deque.enqueue("A");
@@ -235,6 +302,12 @@ public class LinkedDequeTest
     }
 
 
+    /**
+     * Builds a string of the deque's contents from front to back, such as "[A,
+     * B]", so tests can check the order in one assertion.
+     *
+     * @return the contents of the deque as a string
+     */
     private String contents()
     {
         StringBuilder sb = new StringBuilder("[");

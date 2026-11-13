@@ -1,4 +1,3 @@
-package queuetheencore;
 import student.TestCase;
 
 /**

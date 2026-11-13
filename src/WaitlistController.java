@@ -6,7 +6,7 @@ import javax.swing.SwingUtilities;
  * Controller class that connects the view to the model. Turns user actions into
  * model calls and catches expected model problems.
  *
- * @author Justis Phillips (justisp)
+ * @author Justis Phillips justisp
  * @version Nov 12, 2026
  */
 public class WaitlistController
@@ -114,7 +114,8 @@ public class WaitlistController
     {
         view.displayWaitlist(model.getWaitlist());
     }
-    
+
+
     /**
      * Starts the application.
      *
