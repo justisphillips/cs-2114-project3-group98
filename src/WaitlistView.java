@@ -39,7 +39,7 @@ public class WaitlistView extends JFrame
     {
         setTitle("QueueTheEncore");
         setSize(550, 450);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
