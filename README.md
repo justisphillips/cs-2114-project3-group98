@@ -36,7 +36,7 @@ Separating the model from the GUI was especially important because it allows us 
 
 We found it difficult to balance the work distribution since many of our classes depend on one another. We worked through this by communicating and providing ourselves deadlines for when certain classes needed to be completed to allow for cohesion in our project deliverable.
 
-Things that changed from the specification to prototype include: `WaitlistView` uses DISPOSE_ON_CLOSE instead of EXIT_ON_CLOSE, because the student test library blocks System.exit and the view could not be constructed in `WaitlistViewTest`. No separate launcher class: main is in `WaitlistController`.
+Things that changed from the specification to prototype include: `WaitlistView` uses DISPOSE_ON_CLOSE instead of EXIT_ON_CLOSE (this change was implemented because the student test library blocks System.exit and the view could not be constructed in `WaitlistViewTest`). No separate launcher class: main is in `WaitlistController` (this change came from wanting to run the view through a controller for the rubric).
 
 
 ## Next Steps
