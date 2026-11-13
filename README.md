@@ -13,7 +13,7 @@ Each fan receives a unique ID that allows them to check their position or leave 
 ### Running the Model
 
 1. Open the `QueueTheEncore` project in Eclipse.
-2. Make sure the `queuetheencore` package contains `Fan.java`, `LinkedDeque.java`, and `WaitlistModel.java`.
+2. Make sure the default package contains `Fan.java`, `LinkedDeque.java`, and `WaitlistModel.java`.
 3. Open `WaitlistModelTest.java`.
 4. Right-click the file and select **Run As → JUnit Test**.
 5. Review the test results to verify that the model functions correctly.
@@ -23,7 +23,7 @@ The model can run independently of the graphical interface. It manages joining, 
 ### Running the Thin View
 
 1. Make sure `WaitlistView.java` and its required controller class are included in the project.
-2. Run the application's main driver class, if implemented.
+2. Run the application's `WaitlistController.java` class.
 3. Use the interface to enter fan names, view the waitlist, check positions, remove fans, and process the next fan.
 
 The view uses Java Swing to provide a basic interface for interacting with the waitlist. The current focus is functionality rather than visual design.
@@ -35,6 +35,8 @@ One challenge in developing QueueTheEncore was translating our initial project s
 Separating the model from the GUI was especially important because it allows us to test the queue operations independently. Implementing unique fan IDs was another important design decision because multiple fans may share the same name.
 
 We found it difficult to balance the work distribution since many of our classes depend on one another. We worked through this by communicating and providing ourselves deadlines for when certain classes needed to be completed to allow for cohesion in our project deliverable.
+
+Things that changed from the specification to prototype include: `WaitlistView` uses DISPOSE_ON_CLOSE instead of EXIT_ON_CLOSE, because the student test library blocks System.exit and the view could not be constructed in `WaitlistViewTest`. No separate launcher class: main is in `WaitlistController`.
 
 
 ## Next Steps
