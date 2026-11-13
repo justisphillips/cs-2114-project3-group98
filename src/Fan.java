@@ -1,4 +1,3 @@
-package queuetheencore;
 // -------------------------------------------------------------------------
 /**
  * Represents a fan joining the QueueTheEncore concert waitlist.

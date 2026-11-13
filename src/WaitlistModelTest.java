@@ -1,6 +1,3 @@
-
-package queuetheencore;
-
 import student.TestCase;
 import java.util.List;
 import java.util.NoSuchElementException;
