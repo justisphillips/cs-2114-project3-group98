@@ -4,9 +4,7 @@ Repo for Project 3 in CS 2114
 
 ## Project Overview
 
-QueueTheEncore is a Java-based concert ticket waitlist application designed to manage fans waiting to purchase tickets. The application uses a first-in, first-out (FIFO) queue to ensure that fans are processed in the order they join.
-
-Each fan receives a unique ID that allows them to check their position or leave the waitlist. The project follows a Model-View-Controller (MVC) structure to separate the waitlist logic from the user interface.
+QueueTheEncore is a Java concert ticket waitlist. Fans join a line, check their position, leave, and get processed in order. Fan club members are served before regular fans, and each group stays first-in, first-out (FIFO). The code follows MVC: `Fan`, `LinkedDeque`, and `WaitlistModel` are the model, `WaitlistView` is the view, and `WaitlistController` connects them.
 
 ## How to Run
 
@@ -28,56 +26,78 @@ The model can run independently of the graphical interface. It manages joining, 
 
 The view uses Java Swing to provide a basic interface for interacting with the waitlist. The current focus is functionality rather than visual design.
 
+The model tests never create the view or controller.
+
 ## Reflection
 
-One challenge in developing QueueTheEncore was translating our initial project specification into separate classes with clearly defined responsibilities. We needed to determine which methods belonged in the model and which actions should be handled by the controller or displayed by the view.
+**How did the design absorb the change?** The feature is Fan Club Priority. It touched four classes:
+- `WaitlistModel`: now holds two `LinkedDeque<Fan>` lines (fan club and regular). `joinWaitlist(name, member)` picks the line, `processNextFan()` serves the fan club line first, and `getPosition()`, `getWaitlist()`, `leaveWaitlist()`, and `isEmpty()` read both lines.
+- `Fan`: added a constructor `Fan(name, fanID, fanClubMember)`. The old two-argument constructor still works.
+- `WaitlistController`: `handleJoin(name, fanClubMember)` passes the checkbox value to the model.
+- `WaitlistView`: added a "Fan Club Member" checkbox and a `[Fan Club]` tag in the list.
 
-The view will only be responsible for displaying information and collecting user input. 
-The view does not know that WaitlistModel exists, how the queue is stored, or which names and IDs are valid. It receives Fan objects from the controller only to display their name and ID, and it never calls model methods. The view will know each fan's displayed name, queue position, and current waitlist status through information provided by the controller. However, it will not directly access the deque, linked nodes, or internal queue operations.
-When a user joins or leaves the waitlist, the controller will call the appropriate model method and then retrieve the updated waitlist information to refresh the view. Inside refreshView(), the controller calls getWaitlist() and passes the result to the view with displayWaitlist(). We also ran the view through the controller. 
-We chose this approach because it prevents the GUI from depending on how the queue is implemented. It also allows us to test the model separately and modify the interface without changing the underlying waitlist logic. 
+D3 predicted changes to `WaitlistModel`, `WaitlistController`, `WaitlistView`, and the `Fan` constructor, and said `LinkedDeque` would stay unchanged. All of that matched, and `LinkedDeque` was not touched. What surprised us: we expected to use `addFront()` for priority, but it would put the newest member ahead of older members and break FIFO inside the group. Two deques gave priority with no new `LinkedDeque` method.
 
-For the unknowns from the scope, we still need to determine how to maintain FIFO ordering with fan club priority because we haven't implemented that stretch goal yet. We were already able to implement the removing specific users from the deque and dynamically updating positions features. We were able to connect queue operations to the GUI, but have not implemented wait timers or notifications for Demo Mode.
+**Did the change cross the model/view line?** No. The view never calls the model. It still only receives `Fan` objects from the controller. The only new thing it reads is `fan.isFanClubMember()` on a `Fan` it was already given. The checkbox value goes view to controller to model. The only ripple was the extra `handleJoin` parameter, which is the controller's job.
 
-Separating the model from the GUI was especially important because it allows us to test the queue operations independently. Implementing unique fan IDs was another important design decision because multiple fans may share the same name.
+**What changed from the D3 plan?**
+- `Fan` got the 3-argument constructor as planned, and we kept the 2-argument one so existing code and tests still work.
+- `joinWaitlist` got a second overload instead of replacing the old one, for the same reason.
+- The spec said names with invalid characters are rejected, but the D3 code did not do it. `joinWaitlist` now accepts only letters, numbers, spaces, apostrophes, hyphens, and periods, and throws `IllegalArgumentException` otherwise.
+- We planned tests for changing membership while waiting. We did not write them because the model has no way to do that yet.
+- Added tests: fan club ordering, FIFO inside each group, interleaved joins and processing, invalid characters, served or already-removed fans, and zero or negative IDs.
 
-We found it difficult to balance the work distribution since many of our classes depend on one another. We worked through this by communicating and providing ourselves deadlines for when certain classes needed to be completed to allow for cohesion in our project deliverable.
+**What doesn't work yet?**
+- Estimated wait times, notifications, and Demo Mode are not built.
+- Ticket quantity, menu, and Demo Mode settings from the scope do not exist yet, so there is no input to reject.
+- A fan's membership cannot change after joining. Calling `Fan.setFanClubMember()` on a waiting fan does not move them.
+- The controller dialogs and the non-numeric Fan ID check in the view have no automated tests. Our tests target the model only.
 
-Things that changed from the specification to prototype include: `WaitlistView` uses DISPOSE_ON_CLOSE instead of EXIT_ON_CLOSE (this change was implemented because the student test library blocks System.exit and the view could not be constructed in `WaitlistViewTest`). No separate launcher class: main is in `WaitlistController` (this change came from wanting to run the view through a controller for the rubric).
+**What design change would make the next feature cheaper?** Errors and "Now serving" messages are `JOptionPane` dialogs created in the controller, and each one blocks until it is closed. Notifications and Demo Mode would be blocked by them. Adding a message area to `WaitlistView` (`displayMessage(String)`) and routing all messages through it would make both features much cheaper.
 
 
 ## Next Steps
 
-For Deliverable 4, our first priority is to finish connecting the WaitlistModel, WaitlistController, and WaitlistView so that fans can join the waitlist, check their positions, leave the queue, and be processed through the GUI. We will also test invalid inputs, duplicate names, and empty-queue behavior to ensure that the MVP runs without crashing.
+**Left for the final build, in order:**
+1. Message area in the view; replace the dialogs.
+2. Estimated wait time (position x 7 minutes) in the model and view.
+3. Notification when a fan reaches the front.
+4. Model method to change a waiting fan's membership, with tests.
+5. Full test pass, README update, demo rehearsal.
 
-**Change Feature: Fan Club Priority**
+**Stretch goals:** committing to estimated wait times and GUI notifications. Dropping Demo Mode (and with it timer settings), because it needs a timer-driven refresh and we would rather finish the other two well.
 
-Our planned non-trivial feature is Fan Club Priority. Currently, our MVP processes all fans in FIFO order. We plan to modify this behavior so that fan club members receive priority over regular fans while maintaining FIFO order within each membership group.
-
-We predict that this feature will require changes to WaitlistModel to manage priority ordering, WaitlistController to process membership selections, and WaitlistView to allow users to select their membership status with Fan(String name, int fanID, boolean membership). Our Fan class already stores membership information, so we may not need to modify it much besides changing the constuctor. We also expect LinkedDeque to remain unchanged because it already provides the queue operations needed for this feature.
-
-**Stretch Goals**
-
-In addition to Fan Club Priority, we plan to attempt estimated wait times based on a maximum of seven minutes per fan and GUI notifications when a fan reaches the front of the queue. We will decide whether to implement accelerated demo mode based on our progress with the MVP and change feature.
-
-**Additional Testing**
-
-We will add tests to verify that fan club members receive priority, that FIFO ordering is maintained within each membership group, and that regular fans are still processed correctly. We will also test cases involving empty queues, duplicate names, invalid fan IDs, and changes in membership status.
-
+**3-minute demo path:**
+- 0:00-0:20: show the MVC classes and run the program.
+- 0:20-0:50: join Sarah, Ben, and Cy as regular fans.
+- 0:50-1:30: join Dana with the Fan Club box checked. She appears first with `[Fan Club]`. Join Eli (fan club); he lands behind Dana and ahead of Sarah.
+- 1:30-1:50: check Sarah's position, which moved down.
+- 1:50-2:20: bad input: blank name, "R2D2!", a letters-only Fan ID, and an unknown ID.
+- 2:20-2:40: Ben leaves the waitlist.
+- 2:40-2:55: Process Next Fan serves Dana, then Eli.
+- 2:55-3:00: show the passing JUnit run.
+  
 **Division of Work**
 
-Hela will continue developing and testing `WaitlistModel` and `WaitlistView`, including the model changes and GUI elements required for Fan Club Priority. Justis will continue developing and testing `LinkedDeque` and `WaitlistController`, including the controller actions needed to support the new feature. Aaron will be responsible for developing and testing the `Fan` class, including any updates needed to support fan club membership. All three members will collaborate on integrating the application, reviewing the code, and testing its overall functionality.
+- Hela: message area in the view (item 1) and wait time display and notification display (items 2 and 3).
+- Justis: controller changes for the message area and notifications (items 1 and 3).
+- Aaron: wait time method and membership-change method in the model, with tests (items 2 and 4).
+- All three: item 5.
+
 
 ## Attribution
 
 | Component | Contributor | Contribution |
 |---|---|---|
-| `Fan.java` | Aaron | Fan information and membership status |
+| `Fan.java` | Aaron | Wrote; revised with 3-argument constructor |
+| `FanTest.java` | Aaron | Wrote; added fan club constructor tests |
 | `LinkedDeque.java` | Justis | Linked deque implementation |
-| `WaitlistModel.java` | Hela | Waitlist operations and queue management |
-| `WaitlistView.java` | Hela | Swing GUI and display methods |
-| `WaitlistController.java` | Justis | Connects user actions to the model |
-| Tests | [Respective to class creators] | Tests for model and GUI functionality |
+| `LinkedDequeTest.java` | Justis | Wrote; added interleaved enqueue/dequeue order test |
+| `WaitlistModel.java` | Hela | Wrote; revised for fan club priority and name validation |
+| `WaitlistModelTest.java` | Hela | Wrote; added priority and bad-input tests |
+| `WaitlistView.java` | Hela | Wrote; added checkbox and tag |
+| `WaitlistViewTest.java` | Hela | Wrote; added fan club tag test |
+| `WaitlistController.java` | Justis | Wrote; added `handleJoin(name, fanClubMember)` |
 
 ## GenAI Note
 
