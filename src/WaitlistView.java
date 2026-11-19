@@ -13,13 +13,14 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 /**
- * View class for QueueTheEncore.
- * Displays the concert waitlist and handles user input.
+ * View class for QueueTheEncore. Displays the concert waitlist and handles user
+ * input.
  *
  * @author Hela Michael
  * @version Nov 12, 2026
  */
-public class WaitlistView extends JFrame
+public class WaitlistView
+    extends JFrame
 {
     private JTextField nameField;
     private JTextField fanIdField;
@@ -93,8 +94,8 @@ public class WaitlistView extends JFrame
         joinButton.addActionListener(e -> {
             if (controller != null)
             {
-                controller.handleJoin(nameField.getText(),
-                    fanClubBox.isSelected());
+                controller
+                    .handleJoin(nameField.getText(), fanClubBox.isSelected());
             }
         });
 
@@ -156,12 +157,8 @@ public class WaitlistView extends JFrame
         {
             Fan fan = fans.get(i);
 
-            text.append(i + 1)
-                .append(". ")
-                .append(fan.getName())
-                .append(" (ID: ")
-                .append(fan.getFanId())
-                .append(")");
+            text.append(i + 1).append(". ").append(fan.getName())
+                .append(" (ID: ").append(fan.getFanId()).append(")");
 
             if (fan.isFanClubMember())
             {
@@ -194,8 +191,7 @@ public class WaitlistView extends JFrame
         }
         else
         {
-            positionLabel.setText(
-                "Your current position is: " + position);
+            positionLabel.setText("Your current position is: " + position);
         }
     }
 

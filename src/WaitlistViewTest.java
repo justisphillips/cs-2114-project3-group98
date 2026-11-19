@@ -14,14 +14,16 @@ import java.awt.Container;
  * @author Hela Michael
  * @version Nov 13, 2026
  */
-public class WaitlistViewTest extends TestCase
+public class WaitlistViewTest
+    extends TestCase
 {
     private WaitlistView view;
 
     /**
      * Sets up the GUI before each test.
      */
-    public void setUp() throws Exception
+    public void setUp()
+        throws Exception
     {
         SwingUtilities.invokeAndWait(() -> {
             view = new WaitlistView();
@@ -32,7 +34,8 @@ public class WaitlistViewTest extends TestCase
     /**
      * Closes the GUI after each test.
      */
-    public void tearDown() throws Exception
+    public void tearDown()
+        throws Exception
     {
         SwingUtilities.invokeAndWait(() -> {
             view.dispose();
@@ -55,7 +58,8 @@ public class WaitlistViewTest extends TestCase
     /**
      * Tests displaying fans in the correct order.
      */
-    public void testDisplayWaitlist() throws Exception
+    public void testDisplayWaitlist()
+        throws Exception
     {
         List<Fan> fans = new ArrayList<Fan>();
         fans.add(new Fan("Sarah", 1));
@@ -78,7 +82,8 @@ public class WaitlistViewTest extends TestCase
     /**
      * Tests displaying an empty waitlist.
      */
-    public void testDisplayEmptyWaitlist() throws Exception
+    public void testDisplayEmptyWaitlist()
+        throws Exception
     {
         List<Fan> fans = new ArrayList<Fan>();
 
@@ -89,15 +94,15 @@ public class WaitlistViewTest extends TestCase
         JTextArea area = findTextArea(view.getContentPane());
 
         assertNotNull(area);
-        assertTrue(
-            area.getText().contains("The waitlist is empty."));
+        assertTrue(area.getText().contains("The waitlist is empty."));
     }
 
 
     /**
      * Tests displaying a valid fan position.
      */
-    public void testDisplayPosition() throws Exception
+    public void testDisplayPosition()
+        throws Exception
     {
         SwingUtilities.invokeAndWait(() -> {
             view.displayPosition(3);
@@ -106,16 +111,15 @@ public class WaitlistViewTest extends TestCase
         JLabel label = findPositionLabel(view.getContentPane());
 
         assertNotNull(label);
-        assertEquals(
-            "Your current position is: 3",
-            label.getText());
+        assertEquals("Your current position is: 3", label.getText());
     }
 
 
     /**
      * Tests displaying a position that does not exist.
      */
-    public void testInvalidPosition() throws Exception
+    public void testInvalidPosition()
+        throws Exception
     {
         SwingUtilities.invokeAndWait(() -> {
             view.displayPosition(-1);
@@ -146,8 +150,7 @@ public class WaitlistViewTest extends TestCase
 
             if (component instanceof Container)
             {
-                JTextArea result =
-                    findTextArea((Container)component);
+                JTextArea result = findTextArea((Container)component);
 
                 if (result != null)
                 {
@@ -184,8 +187,7 @@ public class WaitlistViewTest extends TestCase
 
             if (component instanceof Container)
             {
-                JLabel result =
-                    findPositionLabel((Container)component);
+                JLabel result = findPositionLabel((Container)component);
 
                 if (result != null)
                 {
@@ -202,7 +204,8 @@ public class WaitlistViewTest extends TestCase
      * Tests that a fan club member is marked in the displayed waitlist and a
      * regular fan is not.
      */
-    public void testDisplayFanClubTag() throws Exception
+    public void testDisplayFanClubTag()
+        throws Exception
     {
         List<Fan> fans = new ArrayList<Fan>();
         fans.add(new Fan("Sarah", 1, true));

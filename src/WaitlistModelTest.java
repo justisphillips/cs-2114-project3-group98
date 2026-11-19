@@ -8,7 +8,8 @@ import java.util.NoSuchElementException;
  * @author Hela Michael
  * @version Nov 13, 2026
  */
-public class WaitlistModelTest extends TestCase
+public class WaitlistModelTest
+    extends TestCase
 {
     private WaitlistModel model;
 
@@ -289,8 +290,8 @@ public class WaitlistModelTest extends TestCase
         assertEquals(2, second.getFanId());
     }
 
-
     // ---- Fan Club Priority ----
+
 
     /**
      * Tests that a fan club member is marked as a member and a regular fan is
@@ -307,8 +308,7 @@ public class WaitlistModelTest extends TestCase
 
 
     /**
-     * Tests that a fan club member who joins later goes ahead of a regular
-     * fan.
+     * Tests that a fan club member who joins later goes ahead of a regular fan.
      */
     public void testFanClubMemberGoesAhead()
     {
@@ -321,8 +321,8 @@ public class WaitlistModelTest extends TestCase
 
 
     /**
-     * Tests that FIFO order is kept inside each group and fan club members
-     * come first in the waitlist.
+     * Tests that FIFO order is kept inside each group and fan club members come
+     * first in the waitlist.
      */
     public void testFifoWithinEachGroup()
     {
@@ -410,16 +410,16 @@ public class WaitlistModelTest extends TestCase
         assertEquals(1, model.getPosition(regular.getFanId()));
     }
 
-
     // ---- Bad input ----
 
+
     /**
-     * Tests that names with invalid characters are rejected and do not
-     * change the waitlist.
+     * Tests that names with invalid characters are rejected and do not change
+     * the waitlist.
      */
     public void testInvalidCharactersRejected()
     {
-        String[] bad = {"R2D2!", "Sarah@home", "<b>Ben</b>", "Cy;DROP"};
+        String[] bad = { "R2D2!", "Sarah@home", "<b>Ben</b>", "Cy;DROP" };
 
         for (String name : bad)
         {
@@ -544,8 +544,8 @@ public class WaitlistModelTest extends TestCase
 
 
     /**
-     * Tests that processing an empty waitlist still throws after every fan
-     * has been served from both groups.
+     * Tests that processing an empty waitlist still throws after every fan has
+     * been served from both groups.
      */
     public void testProcessEmptyAfterServingAll()
     {

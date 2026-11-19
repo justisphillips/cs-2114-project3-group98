@@ -3,9 +3,8 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 /**
- * Model class for QueueTheEncore.
- * Manages fans joining, leaving, and being processed
- * from a concert ticket waitlist.
+ * Model class for QueueTheEncore. Manages fans joining, leaving, and being
+ * processed from a concert ticket waitlist.
  *
  * @author Hela Michael
  * @version Nov 12, 2026
@@ -61,8 +60,7 @@ public class WaitlistModel
     {
         if (name == null || name.trim().isEmpty())
         {
-            throw new IllegalArgumentException(
-                "Fan name cannot be empty.");
+            throw new IllegalArgumentException("Fan name cannot be empty.");
         }
 
         String cleanName = name.trim();
@@ -110,8 +108,8 @@ public class WaitlistModel
 
 
     /**
-     * Removes and returns the next fan. Fan club members are served first,
-     * then regular fans, each in the order they joined.
+     * Removes and returns the next fan. Fan club members are served first, then
+     * regular fans, each in the order they joined.
      *
      * @return the next fan in line
      * @throws NoSuchElementException
@@ -129,8 +127,8 @@ public class WaitlistModel
 
 
     /**
-     * Finds a fan's current position in the waitlist.
-     * Positions begin at 1. Fan club members come before regular fans.
+     * Finds a fan's current position in the waitlist. Positions begin at 1. Fan
+     * club members come before regular fans.
      *
      * @param fanId
      *            the fan's unique ID
@@ -159,8 +157,8 @@ public class WaitlistModel
 
 
     /**
-     * Returns a copy of the current waitlist in serving order: fan club
-     * members first, then regular fans.
+     * Returns a copy of the current waitlist in serving order: fan club members
+     * first, then regular fans.
      *
      * @return a list containing the waiting fans in order
      */
