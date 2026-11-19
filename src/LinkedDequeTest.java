@@ -321,4 +321,27 @@ public class LinkedDequeTest
         }
         return sb.append("]").toString();
     }
+
+
+    /**
+     * Tests that order stays correct when enqueue and dequeue calls are
+     * interleaved, so the front and back keep moving correctly.
+     */
+    public void testInterleavedEnqueueAndDequeueOrder()
+    {
+        deque.enqueue("A");
+        deque.enqueue("B");
+        assertEquals("A", deque.dequeue());
+        deque.enqueue("C");
+        assertEquals("B", deque.dequeue());
+        deque.enqueue("D");
+        deque.enqueue("E");
+        assertEquals("[C, D, E]", contents());
+        assertEquals("C", deque.dequeue());
+        assertEquals("D", deque.dequeue());
+        deque.enqueue("F");
+        assertEquals("E", deque.dequeue());
+        assertEquals("F", deque.dequeue());
+        assertTrue(deque.isEmpty());
+    }
 }

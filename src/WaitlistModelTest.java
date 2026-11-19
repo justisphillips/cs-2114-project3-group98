@@ -288,4 +288,292 @@ public class WaitlistModelTest extends TestCase
         assertEquals(1, first.getFanId());
         assertEquals(2, second.getFanId());
     }
+
+
+    // ---- Fan Club Priority ----
+
+    /**
+     * Tests that a fan club member is marked as a member and a regular fan is
+     * not.
+     */
+    public void testJoinFanClubMember()
+    {
+        Fan member = model.joinWaitlist("Sarah", true);
+        Fan regular = model.joinWaitlist("Michael");
+
+        assertTrue(member.isFanClubMember());
+        assertFalse(regular.isFanClubMember());
+    }
+
+
+    /**
+     * Tests that a fan club member who joins later goes ahead of a regular
+     * fan.
+     */
+    public void testFanClubMemberGoesAhead()
+    {
+        Fan regular = model.joinWaitlist("Sarah");
+        Fan member = model.joinWaitlist("Michael", true);
+
+        assertEquals(1, model.getPosition(member.getFanId()));
+        assertEquals(2, model.getPosition(regular.getFanId()));
+    }
+
+
+    /**
+     * Tests that FIFO order is kept inside each group and fan club members
+     * come first in the waitlist.
+     */
+    public void testFifoWithinEachGroup()
+    {
+        Fan r1 = model.joinWaitlist("Reg One");
+        Fan c1 = model.joinWaitlist("Club One", true);
+        Fan r2 = model.joinWaitlist("Reg Two");
+        Fan c2 = model.joinWaitlist("Club Two", true);
+
+        List<Fan> fans = model.getWaitlist();
+
+        assertEquals(4, fans.size());
+        assertSame(c1, fans.get(0));
+        assertSame(c2, fans.get(1));
+        assertSame(r1, fans.get(2));
+        assertSame(r2, fans.get(3));
+        assertEquals(3, model.getPosition(r1.getFanId()));
+        assertEquals(4, model.getPosition(r2.getFanId()));
+    }
+
+
+    /**
+     * Tests that processNextFan serves fan club members before regular fans.
+     */
+    public void testProcessFanClubFirst()
+    {
+        Fan regular = model.joinWaitlist("Sarah");
+        Fan member = model.joinWaitlist("Michael", true);
+
+        assertSame(member, model.processNextFan());
+        assertSame(regular, model.processNextFan());
+        assertTrue(model.isEmpty());
+    }
+
+
+    /**
+     * Tests order after interleaved joins and processing with both groups.
+     */
+    public void testInterleavedJoinsAndProcessing()
+    {
+        Fan r1 = model.joinWaitlist("Reg One");
+        Fan c1 = model.joinWaitlist("Club One", true);
+        assertSame(c1, model.processNextFan());
+
+        Fan r2 = model.joinWaitlist("Reg Two");
+        Fan c2 = model.joinWaitlist("Club Two", true);
+
+        assertSame(c2, model.processNextFan());
+        assertSame(r1, model.processNextFan());
+
+        Fan c3 = model.joinWaitlist("Club Three", true);
+
+        assertSame(c3, model.processNextFan());
+        assertSame(r2, model.processNextFan());
+        assertTrue(model.isEmpty());
+    }
+
+
+    /**
+     * Tests that a fan club member can leave and positions update.
+     */
+    public void testLeaveFanClubMember()
+    {
+        Fan c1 = model.joinWaitlist("Club One", true);
+        Fan c2 = model.joinWaitlist("Club Two", true);
+        Fan regular = model.joinWaitlist("Sarah");
+
+        assertTrue(model.leaveWaitlist(c1.getFanId()));
+
+        assertEquals(-1, model.getPosition(c1.getFanId()));
+        assertEquals(1, model.getPosition(c2.getFanId()));
+        assertEquals(2, model.getPosition(regular.getFanId()));
+    }
+
+
+    /**
+     * Tests that regular fans move up when a fan club member is processed.
+     */
+    public void testPositionAfterProcessingFanClub()
+    {
+        Fan regular = model.joinWaitlist("Sarah");
+        model.joinWaitlist("Michael", true);
+
+        model.processNextFan();
+
+        assertEquals(1, model.getPosition(regular.getFanId()));
+    }
+
+
+    // ---- Bad input ----
+
+    /**
+     * Tests that names with invalid characters are rejected and do not
+     * change the waitlist.
+     */
+    public void testInvalidCharactersRejected()
+    {
+        String[] bad = {"R2D2!", "Sarah@home", "<b>Ben</b>", "Cy;DROP"};
+
+        for (String name : bad)
+        {
+            try
+            {
+                model.joinWaitlist(name);
+                fail("Expected IllegalArgumentException for " + name);
+            }
+            catch (IllegalArgumentException e)
+            {
+                // Expected exception
+            }
+
+            try
+            {
+                model.joinWaitlist(name, true);
+                fail("Expected IllegalArgumentException for " + name);
+            }
+            catch (IllegalArgumentException e)
+            {
+                // Expected exception
+            }
+        }
+
+        assertTrue(model.isEmpty());
+    }
+
+
+    /**
+     * Tests that letters, numbers, spaces, apostrophes, hyphens, and periods
+     * are accepted in names.
+     */
+    public void testValidCharactersAccepted()
+    {
+        Fan fan = model.joinWaitlist("Mary-Jane O'Neil Jr. 2");
+
+        assertEquals("Mary-Jane O'Neil Jr. 2", fan.getName());
+        assertEquals(1, model.getWaitlist().size());
+    }
+
+
+    /**
+     * Tests that a blank name is rejected for a fan club member too.
+     */
+    public void testBlankNameFanClubRejected()
+    {
+        try
+        {
+            model.joinWaitlist("  ", true);
+            fail("Expected IllegalArgumentException");
+        }
+        catch (IllegalArgumentException e)
+        {
+            // Expected exception
+        }
+
+        assertTrue(model.isEmpty());
+    }
+
+
+    /**
+     * Tests that a rejected name does not use up a fan ID.
+     */
+    public void testRejectedNameDoesNotUseId()
+    {
+        try
+        {
+            model.joinWaitlist("R2D2!");
+        }
+        catch (IllegalArgumentException e)
+        {
+            // Expected exception
+        }
+
+        assertEquals(1, model.joinWaitlist("Sarah").getFanId());
+    }
+
+
+    /**
+     * Tests that a fan who was already served cannot leave or be found.
+     */
+    public void testServedFanCannotLeave()
+    {
+        Fan sarah = model.joinWaitlist("Sarah");
+        model.joinWaitlist("Michael");
+
+        model.processNextFan();
+
+        assertFalse(model.leaveWaitlist(sarah.getFanId()));
+        assertEquals(-1, model.getPosition(sarah.getFanId()));
+        assertEquals(1, model.getWaitlist().size());
+    }
+
+
+    /**
+     * Tests that a fan who already left cannot leave a second time.
+     */
+    public void testLeaveTwiceReturnsFalse()
+    {
+        Fan sarah = model.joinWaitlist("Sarah", true);
+        model.joinWaitlist("Michael");
+
+        assertTrue(model.leaveWaitlist(sarah.getFanId()));
+        assertFalse(model.leaveWaitlist(sarah.getFanId()));
+        assertEquals(1, model.getWaitlist().size());
+    }
+
+
+    /**
+     * Tests that zero and negative IDs are not found.
+     */
+    public void testZeroAndNegativeIds()
+    {
+        model.joinWaitlist("Sarah");
+
+        assertFalse(model.leaveWaitlist(0));
+        assertFalse(model.leaveWaitlist(-5));
+        assertEquals(-1, model.getPosition(0));
+        assertEquals(-1, model.getPosition(-5));
+        assertEquals(1, model.getWaitlist().size());
+    }
+
+
+    /**
+     * Tests that processing an empty waitlist still throws after every fan
+     * has been served from both groups.
+     */
+    public void testProcessEmptyAfterServingAll()
+    {
+        model.joinWaitlist("Sarah");
+        model.joinWaitlist("Michael", true);
+        model.processNextFan();
+        model.processNextFan();
+
+        try
+        {
+            model.processNextFan();
+            fail("Expected NoSuchElementException");
+        }
+        catch (NoSuchElementException e)
+        {
+            assertTrue(model.isEmpty());
+        }
+    }
+
+
+    /**
+     * Tests that IDs are unique across both groups.
+     */
+    public void testUniqueIdsAcrossGroups()
+    {
+        Fan a = model.joinWaitlist("Sarah");
+        Fan b = model.joinWaitlist("Sarah", true);
+
+        assertFalse(a.getFanId() == b.getFanId());
+    }
 }

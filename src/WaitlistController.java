@@ -33,16 +33,30 @@ public class WaitlistController
 
 
     /**
-     * Processes a request to join the waitlist.
+     * Processes a request to join the waitlist as a regular fan.
      *
      * @param name
      *            the name typed by the user
      */
     public void handleJoin(String name)
     {
+        handleJoin(name, false);
+    }
+
+
+    /**
+     * Processes a request to join the waitlist.
+     *
+     * @param name
+     *            the name typed by the user
+     * @param fanClubMember
+     *            true if the user checked the fan club box
+     */
+    public void handleJoin(String name, boolean fanClubMember)
+    {
         try
         {
-            model.joinWaitlist(name);
+            model.joinWaitlist(name, fanClubMember);
         }
         catch (IllegalArgumentException e)
         {

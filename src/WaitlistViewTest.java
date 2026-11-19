@@ -196,4 +196,25 @@ public class WaitlistViewTest extends TestCase
 
         return null;
     }
+
+
+    /**
+     * Tests that a fan club member is marked in the displayed waitlist and a
+     * regular fan is not.
+     */
+    public void testDisplayFanClubTag() throws Exception
+    {
+        List<Fan> fans = new ArrayList<Fan>();
+        fans.add(new Fan("Sarah", 1, true));
+        fans.add(new Fan("Michael", 2));
+
+        SwingUtilities.invokeAndWait(() -> {
+            view.displayWaitlist(fans);
+        });
+
+        String text = findTextArea(view.getContentPane()).getText();
+
+        assertTrue(text.contains("Sarah (ID: 1) [Fan Club]"));
+        assertTrue(text.contains("Michael (ID: 2)\n"));
+    }
 }

@@ -93,4 +93,27 @@ public class FanTest extends TestCase {
         assertEquals("Sarah", fan.getName());
         assertEquals(1, fan.getFanId());
     }
+
+
+    /**
+     * Tests the three-argument constructor with fan club membership true.
+     */
+    public void testConstructorFanClubMember()
+    {
+        Fan member = new Fan("Cy", 3, true);
+
+        assertEquals("Cy", member.getName());
+        assertEquals(3, member.getFanId());
+        assertTrue(member.isFanClubMember());
+    }
+
+    /**
+     * Tests the three-argument constructor with fan club membership false.
+     */
+    public void testConstructorRegularFan()
+    {
+        Fan regular = new Fan("Dee", 4, false);
+
+        assertFalse(regular.isFanClubMember());
+    }
 }

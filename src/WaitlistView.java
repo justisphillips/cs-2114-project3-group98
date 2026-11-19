@@ -3,6 +3,7 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.util.List;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -22,6 +23,7 @@ public class WaitlistView extends JFrame
 {
     private JTextField nameField;
     private JTextField fanIdField;
+    private JCheckBox fanClubBox;
     private JTextArea waitlistArea;
     private JLabel positionLabel;
 
@@ -46,11 +48,13 @@ public class WaitlistView extends JFrame
         JPanel inputPanel = new JPanel(new GridLayout(2, 1));
 
         JPanel namePanel = new JPanel(new FlowLayout());
-        nameField = new JTextField(15);
+        nameField = new JTextField(12);
+        fanClubBox = new JCheckBox("Fan Club Member");
         joinButton = new JButton("Join Waitlist");
 
         namePanel.add(new JLabel("Name:"));
         namePanel.add(nameField);
+        namePanel.add(fanClubBox);
         namePanel.add(joinButton);
 
         JPanel idPanel = new JPanel(new FlowLayout());
@@ -89,7 +93,8 @@ public class WaitlistView extends JFrame
         joinButton.addActionListener(e -> {
             if (controller != null)
             {
-                controller.handleJoin(nameField.getText());
+                controller.handleJoin(nameField.getText(),
+                    fanClubBox.isSelected());
             }
         });
 
@@ -156,7 +161,14 @@ public class WaitlistView extends JFrame
                 .append(fan.getName())
                 .append(" (ID: ")
                 .append(fan.getFanId())
-                .append(")\n");
+                .append(")");
+
+            if (fan.isFanClubMember())
+            {
+                text.append(" [Fan Club]");
+            }
+
+            text.append("\n");
         }
 
         if (fans.isEmpty())
@@ -210,4 +222,3 @@ public class WaitlistView extends JFrame
         }
     }
 }
-

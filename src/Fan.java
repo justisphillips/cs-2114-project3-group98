@@ -25,14 +25,28 @@ public class Fan
      */
     // Constructor
     public Fan(String name, int fanID) {
-        this.name = name;
-        this.fanID = fanID;
-        this.fanClubMember = false;
+        this(name, fanID, false);
     }
 
     // ----------------------------------------------------------
     /**
-     * /**
+     * Creates a new Fan with a name, unique ID, and fan club status.
+     *
+     * @param name
+     *            the name of the fan
+     * @param fanID
+     *            the unique identification number of the fan
+     * @param fanClubMember
+     *            true if the fan is a fan club member
+     */
+    public Fan(String name, int fanID, boolean fanClubMember) {
+        this.name = name;
+        this.fanID = fanID;
+        this.fanClubMember = fanClubMember;
+    }
+
+    // ----------------------------------------------------------
+    /**
      * Returns the fan's unique identification number.
      *
      * @return the fan's unique ID
@@ -44,7 +58,6 @@ public class Fan
     
     // ----------------------------------------------------------
     /**
-     /**
      * Returns the fan's name.
      *
      * @return the name of the fan
